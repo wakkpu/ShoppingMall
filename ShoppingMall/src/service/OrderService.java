@@ -1,13 +1,13 @@
 package service;
 
 import java.util.List;
-import java.util.Optional;
 
-import Entity.Consumer;
 import Entity.Item;
 import Entity.OrderDetail;
 import Entity.OrderSet;
 import dto.CancelInput;
+import dto.ItemQuntityDto;
+import dto.OrderDetailDto;
 import dto.OrderDetailResponse;
 import dto.OrderInputDTO;
 import repo.CargoRepository;
@@ -34,7 +34,7 @@ public class OrderService {
 		
 	}
 
-	/** 바로 주문
+	/** 주문
 	 * @throws Exception 
 	 * 
 	 * 
@@ -51,9 +51,9 @@ public class OrderService {
 	 * 주문 목록 조회
 	 */
 	
-	public List<OrderSet> readOrderList(Consumer consumer) throws Exception {
+	public List<OrderSet> readOrderList(Long consumerId) throws Exception {
 		
-		List<OrderSet> result = orderRepository.selectOrderListByConsumerId(consumer.getConsumerId());
+		List<OrderSet> result = orderRepository.selectOrderListByConsumerId(consumerId);
 		
 		return result;
 
@@ -63,21 +63,20 @@ public class OrderService {
 	 * 특정 주문 상세 조회
 	 */
 	
-	public OrderDetailResponse readOrderList(Long orderSetId) throws Exception {
+	public OrderDetailResponse readOrderDetail(Long orderSetId) throws Exception {
 		
 		
-		List<OrderDetail> orderDetailList = orderRepository.selectDetial(orderSetId);
+		List<ItemQuntityDto> orderDetailList = orderRepository.selectDetial(orderSetId);
 		OrderDetailResponse response = new OrderDetailResponse();
-		List<OrderInputDTO> orderDetail = null;
+		List<OrderDetailDto> orderDetail = null;
 		long totalPrice = 0;
-		for (OrderDetail orderDetial : orderDetailList) {
+		
+		for (ItemQuntityDto i : orderDetailList) {
 			
-			long itemId = cargoRepository.selectItem(orderDetial.getCargoId());
-			Item item = itemRepository.selectItem(itemId).get();
-			long price = orderDeatailRepository.selectPrice(orderDetial.getCargoId());
-			totalPrice += price;
+			String itemName = itemRepository.selectItem(i.getItemId()).get().getItemName();
+			totalPrice += i.getItemPrice();
 			
-			orderDetail.add(new OrderInputDTO(item.getItemId(), price));
+			orderDetail.add(new OrderDetailDto(i.getItemId(), itemName, i.getItemQuantity(), i.getItemPrice()));
 		}
 		response.setOrderDetail(orderDetail);
 		response.setTotalPrice(totalPrice);

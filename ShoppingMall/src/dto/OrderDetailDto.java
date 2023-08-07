@@ -7,10 +7,11 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class CancelInput {
+public class OrderDetailDto {
 	
-	private long itemId;
-	private long modifyQuantity;	
-
+	private Long itemId;
+	private String itemName;
+	private long itemQuantity;
+	private long itemPrice;	
 
 }

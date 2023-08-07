@@ -4,18 +4,21 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 import Entity.OrderSet;
-import util.ConnectionPool;
+import resources.ConnectionPool;
 
 public class OrderSetRepository{
 
-	ConnectionPool cp;
+	ConnectionPool connectionPool;
+	
+	Logger logger = Logger.getLogger("Cargo Repository");
 	
 	public OrderSetRepository() {
 		try {
-			cp = ConnectionPool.create();
-		} catch (SQLException e) {
+			connectionPool = ConnectionPool.create();
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -38,14 +41,14 @@ public class OrderSetRepository{
 
 			ResultSet rs = pstmt.getGeneratedKeys();
 			if (rs.next()) {
-				orderId = rs.getInt(1); // 키값 초기화
+				orderId = rs.getInt(1); // auto_increment id
 			}
 
 		} catch (Exception e) {
 			throw new Exception("order_set 업데이트 실패");
 		} finally {
-			CRUDRepository.closePstmt(pstmt);
-			cp.releaseConnection(con);
+			CRUDRepository.closePreparedStatement(pstmt);
+			connectionPool.releaseConnection(con);
 		}
 
 		// 성공하면 ordersetId

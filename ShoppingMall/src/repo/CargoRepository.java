@@ -31,7 +31,7 @@ public class CargoRepository implements CRUDRepository<Long, Cargo> {
 
 	public Long selectItem(Long cargoId) throws Exception {
 
-		Connection con = cp.getConnection();
+		Connection conn = connectionPool.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
@@ -39,7 +39,7 @@ public class CargoRepository implements CRUDRepository<Long, Cargo> {
 
 		try {
 
-			pstmt = con.prepareStatement("SELECT * FROM cargo WHERE cargo_id=? Limit 1");
+			pstmt = conn.prepareStatement("SELECT * FROM cargo WHERE cargo_id=? Limit 1");
 
 			pstmt.setLong(1, cargoId);
 
@@ -56,32 +56,33 @@ public class CargoRepository implements CRUDRepository<Long, Cargo> {
 			throw new Exception("상세 조회 에러 ");
 
 		} finally {
-			CRUDRepository.closeRset(rset);
-			CRUDRepository.closePstmt(pstmt);
-			cp.releaseConnection(con);
+			CRUDRepository.closeResultSet(rset);
+			CRUDRepository.closePreparedStatement(pstmt);
+			connectionPool.releaseConnection(conn);
 		}
 
 		return cargo.getItemId();
 	}
 
-	public int updateState(Connection con, long cargoId) throws Exception {
+	public int updateState(Connection conn, long cargoId) throws Exception {
 
 		int result = 0;
 		PreparedStatement pstmt = null;
 
 		try {
-			pstmt = con.prepareStatement("UPDATE cargo SET state_id=? WHERE cargo_id=?");
+			pstmt = conn.prepareStatement("UPDATE cargo SET state_id=? WHERE cargo_id=?");
 
 			pstmt.setLong(1, 6L);
 			pstmt.setLong(2, cargoId);
 
 			result = pstmt.executeUpdate();
-			con.commit();
 
 		} catch (Exception e) {
-			con.rollback();
 			throw new Exception("상태 업데이트 에러 ");
 		}
+		
+		return result;
+	}
 
 	@Override
 	public int insert(Cargo v) throws Exception {
@@ -148,6 +149,37 @@ public class CargoRepository implements CRUDRepository<Long, Cargo> {
 	@Override
 	public List<Cargo> selectAll() throws Exception {
 		return null;
+	}
+	
+	public List<CargoDto> selectCargoId(Connection con, Long itmeId, Long quantity) throws Exception {
+		List<CargoDto> result = new ArrayList<>();
+
+		Connection conn = connectionPool.getConnection();
+		PreparedStatement pStmt = null;
+		ResultSet resultSet = null;
+
+		final String selectCargoId = "SELECT cargo_id, item_name, status_name FROM cargo c "
+				+ "JOIN item i ON i.item_id = c.item_id " + "JOIN status s ON s.status_id = c.status_id"
+				+ "WHERE c.status_id = ? Limit ?";
+		try {
+			pStmt = conn.prepareStatement(selectCargoId);
+			pStmt.setLong(1, 3L);
+			pStmt.setLong(2, quantity);
+			resultSet = pStmt.executeQuery();
+
+			while (resultSet.next()) {
+				result.add(CargoDto.builder().cargoId(resultSet.getLong("cargo_id"))
+						.itemName(resultSet.getString("item_name")).statusName(resultSet.getString("status_name"))
+						.build());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			CRUDRepository.closePreparedStatement(pStmt);
+			connectionPool.releaseConnection(conn);
+		}
+
+		return result;
 	}
 	
 	public List<CargoDto> selectAllCargo() throws Exception {

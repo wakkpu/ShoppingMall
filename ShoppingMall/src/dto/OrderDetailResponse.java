@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderDetailResponse {
 	
-	
-	private List<OrderInputDTO> orderDetail;
+	private List<OrderDetailDto> orderDetail;
 	private long totalPrice;
 	
 }

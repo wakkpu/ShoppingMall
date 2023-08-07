@@ -5,20 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Optional;
+import java.util.logging.Logger;
 
-import Entity.Item;
 import Entity.OrderDetail;
-import util.ConnectionPool;
+import resources.ConnectionPool;
 
 public class OrderDetailRepository {
 
-	ConnectionPool cp;
-
+	ConnectionPool connectionPool;
+	
+	Logger logger = Logger.getLogger("Cargo Repository");
+	
 	public OrderDetailRepository() {
 		try {
-			cp = ConnectionPool.create();
-		} catch (SQLException e) {
+			connectionPool = ConnectionPool.create();
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -67,13 +68,13 @@ public class OrderDetailRepository {
 
 	public long selectPrice(Long cargoId) throws Exception {
 
-		Connection con = cp.getConnection();
+		Connection conn = connectionPool.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		long price = 0;
 
 		try {
-			pstmt = con.prepareStatement("SELECT price FROM item WHERE cargo_id=?");
+			pstmt = conn.prepareStatement("SELECT buy_price FROM order_SET WHERE cargo_id=?");
 
 			pstmt.setLong(1, cargoId);
 
@@ -85,9 +86,9 @@ public class OrderDetailRepository {
 		} catch (Exception e) {
 			throw new Exception("가격 정보 에러 ");
 		} finally {
-			CRUDRepository.closeRset(rset);
-			CRUDRepository.closePstmt(pstmt);
-			cp.releaseConnection(con);
+			CRUDRepository.closeResultSet(rset);
+			CRUDRepository.closePreparedStatement(pstmt);
+			connectionPool.releaseConnection(conn);
 		}
 
 		return price;

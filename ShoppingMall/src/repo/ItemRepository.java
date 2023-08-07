@@ -5,31 +5,34 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import Entity.Item;
-import util.ConnectionPool;
+import resources.ConnectionPool;
 
 public class ItemRepository {
 
-	ConnectionPool cp;
-
+	ConnectionPool connectionPool;
+	
+	Logger logger = Logger.getLogger("Cargo Repository");
+	
 	public ItemRepository() {
 		try {
-			cp = ConnectionPool.create();
-		} catch (SQLException e) {
+			connectionPool = ConnectionPool.create();
+		} catch(SQLException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public Optional<Item> selectItem(Long itemId) throws Exception {
 
-		Connection con = cp.getConnection();
+		Connection conn = connectionPool.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		Item item = null;
 
 		try {
-			pstmt = con.prepareStatement("SELECT * FROM item WHERE itemId=?");
+			pstmt = conn.prepareStatement("SELECT * FROM item WHERE itemId=?");
 
 			pstmt.setLong(1, itemId);
 
@@ -42,9 +45,9 @@ public class ItemRepository {
 		} catch (Exception e) {
 			throw new Exception("아이템 조회 에러 ");
 		} finally {
-			CRUDRepository.closeRset(rset);
-			CRUDRepository.closePstmt(pstmt);
-			cp.releaseConnection(con);
+			CRUDRepository.closeResultSet(rset);
+			CRUDRepository.closePreparedStatement(pstmt);
+			connectionPool.releaseConnection(conn);
 		}
 
 		return Optional.of(item);

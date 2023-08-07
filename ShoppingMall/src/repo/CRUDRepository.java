@@ -23,4 +23,5 @@ public interface CRUDRepository<K, V> {
 	public static void closePreparedStatement(PreparedStatement pStmt) throws Exception {
 		if(pStmt != null) pStmt.close();
 	}
+
 }

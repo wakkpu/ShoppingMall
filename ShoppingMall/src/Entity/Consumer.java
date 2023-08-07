@@ -17,6 +17,7 @@ public class Consumer {
 	private String userEmail;
 	private String password;
 	private String phoneNumber;
+	private String address;
 	private String userName;
 	private boolean isAdmin;
 }

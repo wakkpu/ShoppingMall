@@ -3,6 +3,7 @@ package repo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -13,7 +14,15 @@ import util.ConnectionPool;
 public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 	Logger log = Logger.getLogger("ConsumerRepo");
 	ConnectionPool cp;
-	long lastId = 1;
+	
+	public ConsumerRepository() {
+		try {
+			cp = ConnectionPool.create();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public int insert(Consumer v) throws Exception {
 		int result = 0;
@@ -22,15 +31,25 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		
 		try {
 			pstmt = con.prepareStatement(SQL.consumInsert);
-			pstmt.setLong(1, lastId++);
-			pstmt.setLong(2, );
-			pstmt.setString(3, )
+			pstmt.setLong(1, v.getConsumerId());
+			pstmt.setLong(2, v.getMembershipId());
+			pstmt.setString(3, v.getUserEmail());
+			pstmt.setString(4, v.getPassword());
+			pstmt.setString(5, v.getPhoneNumber());
+			pstmt.setString(6, v.getAddress());
+			pstmt.setString(7, v.getUserName());
+			pstmt.setInt(8, (v.isAdmin()) ? 1 : 0);
+			
+			result = pstmt.executeUpdate();
+			log.info("회원가입 완료");
 		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("회원가입 에러");
+		} finally {
 			
 		}
 		
-		
-		return 0;
+		return result;
 	}
 
 	@Override
@@ -57,7 +76,7 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		return null;
 	}
 	
-	public Consumer selectByEmail(String useremail) {
+	public Consumer selectByEmail(String useremail) throws Exception {
 		Consumer consumer = null;
 		Connection con = cp.getConnection();
 		PreparedStatement pstmt = null;
@@ -70,7 +89,6 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			rset.next();
 			consumer = Consumer.builder()
 					.userEmail(rset.getString("userEmail"))
-					.isAdmin(rset.getString("isAdmin"))
 					.build();
 		} catch(Exception e) {
 			log.info(e.getMessage());

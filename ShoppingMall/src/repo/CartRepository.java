@@ -111,7 +111,6 @@ public class CartRepository{
             pstmt.setLong(2,cartKey.getItemId());
             rset = pstmt.executeQuery();
             if (rset.next()) { // 결과가 있다면
-                System.out.println(rset.getLong("item_id"));
                 cartItem = CartItem.builder()
                         .itemId(rset.getLong("item_id"))
                         .consumerId(rset.getLong("consumer_id"))

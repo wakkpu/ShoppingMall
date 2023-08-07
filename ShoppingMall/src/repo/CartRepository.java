@@ -3,7 +3,8 @@ package repo;
 import Entity.CartItem;
 import dto.CartKey;
 import dto.CartItemDto;
-import util.ConnectionPool;
+import resources.ConnectionPool;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

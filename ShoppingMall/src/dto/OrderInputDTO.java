@@ -1,4 +1,4 @@
-package Entity;
+package dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class Cargo {
-	private Long cargoId;
+public class OrderInputDTO {
+	
 	private long itemId;
-	private long statusId;
+	private long itemQuantity;	
+
 }

@@ -16,17 +16,12 @@ public interface CRUDRepository<K, V> {
 	
 	public List<V> selectAll() throws Exception;
 	
-	public static void closePstmt(PreparedStatement pstmt) throws Exception {
-		if(pstmt != null) {
-			pstmt.close();
-		}
-		
-	}
-	public static void closeRset(ResultSet rset) throws Exception {
-		if(rset != null) {
-			rset.close();
-		}
-		
+	public static void closeResultSet(ResultSet resultSet) throws Exception {
+		if(resultSet != null) resultSet.close();
 	}
 	
+	public static void closePreparedStatement(PreparedStatement pStmt) throws Exception {
+		if(pStmt != null) pStmt.close();
+	}
+
 }

@@ -6,6 +6,7 @@ import Entity.Consumer;
 import dto.JoinDto;
 import dto.LoginDto;
 import dto.LoginResultDto;
+import dto.MembershipDto;
 import service.ConsumerService;
 
 public class Main {
@@ -15,28 +16,36 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		while(true) {
-			System.out.println("1. ·Î±×ÀÎ 2. È¸¿ø°¡ÀÔ");
+			System.out.println("1. ë¡œê·¸ì¸ 2. íšŒì›ê°€ì…");
 			String cmd = sc.next();
 			if(cmd.equals("1")) {
-				System.out.println("·Î±×ÀÎ ÀÌ¸ŞÀÏÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ë¡œê·¸ì¸ ì´ë©”ì¼ì„ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				String loginEmail = sc.next();
-				System.out.println("·Î±×ÀÎ ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ë¡œê·¸ì¸ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				String loginPwd = sc.next();
 				LoginDto loginDto = new LoginDto(loginEmail, loginPwd);
 				if(!consumerService.checkUser(loginDto)) {
-					System.out.println("ÀÌ¸ŞÀÏ°ú ºñ¹Ğ¹øÈ£°¡ ÀÏÄ¡ÇÏÁö ¾Ê½À´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇØÁÖ¼¼¿ä.");
-					System.out.println("·Î±×ÀÎ ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä");
+					System.out.println("ì´ë©”ì¼ê³¼ ë¹„ë°€ë²ˆí˜¸ê°€ ì¼ì¹˜í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤. ë‹¤ì‹œ ì…ë ¥í•´ì£¼ì„¸ìš”.");
+					System.out.println("ë¡œê·¸ì¸ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”");
 					loginPwd = sc.next();
 					break;
 				}
 				loginedUser = consumerService.getUser(loginDto);
 				if(!loginedUser.isAdmin()) {
-					System.out.println("¾È³çÇÏ¼¼¿ä " + loginedUser.getUserName() +"´Ô È¯¿µÇÕ´Ï´Ù~");
-					System.out.println(loginedUser.getUserName() + "´ÔÀÇ ÇöÀç ¸â¹ö½Ê µî±ŞÀº " + loginedUser.getGrade() + "ÀÔ´Ï´Ù.");
+					System.out.println("ì•ˆë…•í•˜ì„¸ìš” " + loginedUser.getUserName() +"ë‹˜ í™˜ì˜í•©ë‹ˆë‹¤~");
+					System.out.println(loginedUser.getUserName() + "ë‹˜ì˜ í˜„ì¬ ë©¤ë²„ì‹­ ë“±ê¸‰ì€ " + loginedUser.getGrade() + "ì…ë‹ˆë‹¤.");
 					System.out.println();
+					System.out.println("0. íšŒì› ì •ë³´ ì¡°íšŒ 1. ì¥ë°”êµ¬ë‹ˆ ì¡°íšŒ 2. ìƒí’ˆ ëª©ë¡ ì¡°íšŒ 3. ì£¼ë¬¸ ëª©ë¡ ì¡°íšŒ 4. ë¡œê·¸ì•„ì›ƒ");
 					cmd = sc.next();
-					System.out.println("1. Àå¹Ù±¸´Ï Á¶È¸ 2. »óÇ° ¸ñ·Ï Á¶È¸ 3. ÁÖ¹® ¸ñ·Ï Á¶È¸ 4. ·Î±×¾Æ¿ô");
-					if(cmd.equals("1")) {
+					if(cmd.equals("0")) {
+						MembershipDto membership = consumerService.getMembershipDetail(loginedUser.getConsumerId());
+						System.out.println("== " + loginedUser.getUserName() + "ë‹˜ì˜ íšŒì›ì •ë³´ ì¡°íšŒ ==");
+						System.out.println("ì‚¬ìš©ìëª…: " + loginedUser.getUserName());
+						System.out.println("ì´ë©”ì¼: " + loginedUser.getUserEmail());
+						System.out.println("ì „í™”ë²ˆí˜¸: " + loginedUser.getPhoneNumber());
+						System.out.println("ê¸°ë³¸ ë°°ì†¡ì§€: " + loginedUser.getAddress());
+						System.out.println("*ë©¤ë²„ì‹­: " + membership.getGrade() + " (í• ì¸ë¥ : " + membership.getDiscountRate() + "% ì ìš©)");
+					} else if(cmd.equals("1")) {
 						
 					} else if(cmd.equals("2")) {
 						
@@ -46,11 +55,11 @@ public class Main {
 						loginedUser = null;
 						continue;
 					}
-				} else { //°ü¸®ÀÚ ·Î±×ÀÎ
-					System.out.println("°ü¸®ÀÚ(admin) °èÁ¤ÀÔ´Ï´Ù");
-					System.out.println("¼öÇàÇÒ ÀÛ¾÷À» ¼±ÅÃÇÏ¼¼¿ä");
+				} else { //ê´€ë¦¬ì ë¡œê·¸ì¸
+					System.out.println("ê´€ë¦¬ì(admin) ê³„ì •ì…ë‹ˆë‹¤");
+					System.out.println("ìˆ˜í–‰í•  ì‘ì—…ì„ ì„ íƒí•˜ì„¸ìš”");
 					cmd = sc.next();
-					System.out.println("1. Ã¢°í ¸ñ·Ï Á¶È¸ 2. »óÇ° ¸ñ·Ï Á¶È¸ 3. ÁÖ¹®¸ñ·Ï Á¶È¸ 4. ·Î±×¾Æ¿ô");
+					System.out.println("1. ì°½ê³  ëª©ë¡ ì¡°íšŒ 2. ìƒí’ˆ ëª©ë¡ ì¡°íšŒ 3. ì£¼ë¬¸ëª©ë¡ ì¡°íšŒ 4. ë¡œê·¸ì•„ì›ƒ");
 					if(cmd.equals("1")) {
 						
 					} else if(cmd.equals("2")) {
@@ -64,24 +73,24 @@ public class Main {
 				}
 				
 			} else if(cmd.equals("2")) {
-				System.out.println("°¡ÀÔÇÏ½Ç ÀÌ¸ŞÀÏÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ê°€ì…í•˜ì‹¤ ì´ë©”ì¼ì„ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				boolean checkValid = false;
 				String userEmail = null;
 				while(!checkValid) {
 					userEmail = sc.next();
-					//ÀÌ¸ŞÀÏ Çü½Ä È®ÀÎ
-					break;//ÀÓ½Ã
+					//ì´ë©”ì¼ í˜•ì‹ í™•ì¸
+					break;//ì„ì‹œ
 				}
-				System.out.println("°¡ÀÔÇÏ½Ç ºñ¹Ğ¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ê°€ì…í•˜ì‹¤ ë¹„ë°€ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				String password = sc.next();
 				
-				System.out.println("»ç¿ëÀÚÀÇ ÀüÈ­¹øÈ£¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ì‚¬ìš©ìì˜ ì „í™”ë²ˆí˜¸ë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				String phoneNumber = sc.next();
 				
-				System.out.println("»ç¿ëÀÚÀÇ ÁÖ¼Ò¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä");
+				System.out.println("ì‚¬ìš©ìì˜ ì£¼ì†Œë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”");
 				String address = sc.next();
 				
-				System.out.println("»ç¿ëÀÚÀÇ ÀÌ¸§À» ¼³Á¤ÇØÁÖ¼¼¿ä");
+				System.out.println("ì‚¬ìš©ìì˜ ì´ë¦„ì„ ì„¤ì •í•´ì£¼ì„¸ìš”");
 				String userName = sc.next();
 				JoinDto joinDto = new JoinDto(++lastId, userEmail, password, phoneNumber, address, userName);
 				consumerService.register(joinDto);

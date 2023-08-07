@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Optional;
 
 import Entity.Consumer;
+import Entity.Membership;
 import dto.JoinDto;
 import dto.LoginDto;
 import dto.LoginResultDto;
+import dto.MembershipDto;
 import repo.CRUDRepository;
 import repo.ConsumerRepository;
 
@@ -14,7 +16,7 @@ public class ConsumerService {
 	private ConsumerRepository consumerRepository = new ConsumerRepository();
 	
 	/**
-	 * 회원가입하기
+	 * 
 	 * @param joinDto
 	 */
 	public void register(JoinDto joinDto) {
@@ -29,7 +31,6 @@ public class ConsumerService {
 	}
 	
 	/**
-	 * 로그인이메일로 유저정보 찾아오기
 	 * @param loginDto
 	 */
 	public LoginResultDto getUser(LoginDto loginDto) {
@@ -39,8 +40,12 @@ public class ConsumerService {
 			found = consumerRepository.selectByEmail(loginDto.getLoginEmail());
 			String grade = getLoginedMembership(found);
 			loginResultDto = LoginResultDto.builder()
+								.consumerId(found.getConsumerId())
+								.membershipId(found.getMembershipId())
 								.userEmail(found.getUserEmail())
 								.password(found.getPassword())
+								.phoneNumber(found.getPhoneNumber())
+								.address(found.getAddress())
 								.userName(found.getUserName())
 								.grade(grade)
 								.isAdmin(found.isAdmin())
@@ -57,7 +62,8 @@ public class ConsumerService {
 	public String getLoginedMembership(Consumer logined) {
 		String grade = null;
 		try {
-			grade = consumerRepository.selectMembershipById(logined.getConsumerId());
+			Membership membership = consumerRepository.selectMembershipById(logined.getConsumerId());
+			grade = membership.getGrade();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -65,7 +71,6 @@ public class ConsumerService {
 	}
 	
 	/** 
-	 * 이메일에 해당하는 비밀번호가 맞는지 확인
 	 * @param loginDto
 	 * @return boolean
 	 */
@@ -75,6 +80,21 @@ public class ConsumerService {
 			return false;
 		}
 		return true;
+	}
+	
+	public MembershipDto getMembershipDetail(Long consumerId) {
+		MembershipDto membershipDto = null;
+		try {
+			Membership membership = consumerRepository.selectMembershipById(consumerId);
+			membershipDto = MembershipDto.builder()
+								.grade(membership.getGrade())
+								.discountRate(membership.getDiscountRate())
+								.build();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return membershipDto;
 	}
 	
 	

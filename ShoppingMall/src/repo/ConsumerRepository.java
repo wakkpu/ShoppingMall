@@ -43,10 +43,10 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			pstmt.setInt(8, (v.isAdmin()) ? 1 : 0);
 			
 			result = pstmt.executeUpdate();
-			log.info("È¸¿ø°¡ÀÔ ¿Ï·á");
+			log.info("È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½");
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("È¸¿ø°¡ÀÔ ¿¡·¯");
+			throw new Exception("È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
 		} finally {
 			closePstmt(pstmt);
 			cp.releaseConnection(con);
@@ -93,12 +93,14 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			found = Consumer.builder()
 					.consumerId(rset.getLong("consumer_id"))
 					.userEmail(userEmail)
+					.phoneNumber(rset.getString("phone_number"))
+					.address(rset.getString("address"))
 					.password(rset.getString("password"))
 					.userName(rset.getString("user_name"))
 					.build();
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("Á¶È¸¿¡·¯");
+			throw new Exception("ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½");
 		} finally {
 			closeRset(rset);
 			closePstmt(pstmt);
@@ -107,28 +109,32 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		return found;
 	}
 	
-	public String selectMembershipById(Long consumerId) throws Exception {
+	public Membership selectMembershipById(Long consumerId) throws Exception {
 		Connection con = cp.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		
-		String grade = null;
+		Membership membership = null;
 		try {
 			pstmt = con.prepareStatement(SQL.membershipSelect);
 			pstmt.setLong(1, consumerId);
 			
 			rset = pstmt.executeQuery();
 			rset.next();
-			grade = rset.getString("grade");
+			membership = Membership.builder()
+							.grade(rset.getString("grade"))
+							.discountRate(rset.getDouble("discount_rate"))
+							.build();
+//			grade = rset.getString("grade");
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("Á¶È¸¿¡·¯");
+			throw new Exception("ï¿½ï¿½È¸ï¿½ï¿½ï¿½ï¿½");
 		} finally {
 			closeRset(rset);
 			closePstmt(pstmt);
 			cp.releaseConnection(con);
 		}
-		return grade;
+		return membership;
 	}
 	
 	public void closePstmt(PreparedStatement pstmt) throws Exception {

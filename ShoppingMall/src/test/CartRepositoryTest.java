@@ -1,10 +1,5 @@
 package test;
 
-import Entity.CartItem;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import repo.CartRepository;
-
 /*public class CargoTest {
 
 	CartRepository cartRepository;

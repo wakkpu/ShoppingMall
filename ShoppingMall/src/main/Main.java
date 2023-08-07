@@ -55,16 +55,14 @@ public class Main {
 				System.out.println(item.getItemName()+" "+item.getItemPrice());
 			}
 		}else if(choiceNumber==2){
-			if(1==1) return;
 			List<Category> categories = categoryService.selectAll();
 
 			for(Category category : categories){
 				System.out.print(category.getCategoryId()+" "+category.getCategoryName()+" ");
 			}
+			System.out.println();
 
-			int count = 1;
 			while(true) {
-				if(count>3) break;
 				System.out.println();
 				System.out.println("1.보기 2.다음으로감(있으면) 3. 종료");
 				choiceNumber = Integer.parseInt(br.readLine());
@@ -77,7 +75,6 @@ public class Main {
 						System.out.println(item.getItemName() + " " + item.getItemPrice());
 					}
 				} else if (choiceNumber == 2) {
-					count++;
 					System.out.println("상세 정보 볼 코드 입력");
 					choiceNumber = Integer.parseInt(br.readLine());
 					List<CategoryDto> childCategoryId = categoryService.getChildCategoryId(choiceNumber);

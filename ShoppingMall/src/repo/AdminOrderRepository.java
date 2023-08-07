@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,9 +17,12 @@ public class AdminOrderRepository implements CRUDRepository<Long, OrderSet> {
 
 	ConnectionPool connectionPool;
 	
+	DateTimeFormatter dateTimeFormatter;
+	
 	public AdminOrderRepository() {
 		try {
 			connectionPool = ConnectionPool.create();
+			dateTimeFormatter = DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm");
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
@@ -68,7 +73,7 @@ public class AdminOrderRepository implements CRUDRepository<Long, OrderSet> {
 						.orderSetId(resultSet.getLong("order_set_id"))
 						.consumerId(resultSet.getLong("consumer_id"))
 						.orderCode(resultSet.getString("order_code"))
-//						.orderTime(resultSet.getTime("order_time"))
+						.orderTime(LocalDateTime.parse(resultSet.getString("order_time"), dateTimeFormatter))
 						.orderAddress(resultSet.getString("order_address"))
 						.build()
 						);
@@ -108,7 +113,7 @@ public class AdminOrderRepository implements CRUDRepository<Long, OrderSet> {
 						.orderSetId(resultSet.getLong("order_set_id"))
 						.consumerId(resultSet.getLong("consumer_id"))
 						.orderCode(resultSet.getString("order_code"))
-//						.orderTime(resultSet.getTime("order_time"))
+						.orderTime(LocalDateTime.parse(resultSet.getString("order_time"), dateTimeFormatter))
 						.orderAddress(resultSet.getString("order_address"))
 						.build()
 						);

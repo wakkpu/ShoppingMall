@@ -11,4 +11,5 @@ public class CargoDto {
 	private String statusName;
 	private Long itemPrice;
 	private Long cargoCount;
+	private Long categoryId;
 }

@@ -31,23 +31,23 @@ public class AdminService {
 	
 	// TODO need to be transaction
 	public void registerCargo(CargoDto cargoDto) {
+		
+		final long DEFAULT_STATUS = 2L;
+		
 		try {
-			// cargoDto·ÎºÎÅÍ item_name, item_price Á¶È¸
-			// (category_id, item_name, item_price) -> item »ı¼º
+			// cargoDtoí†µí•´ì„œ item_name, item_price ì¡°íšŒ
+			// (category_id, item_name, item_price) -> item ìƒì„±
 			
-			// item_nameÀ» ÅëÇØ item_id Á¶È¸
+			// item_nameí†µí•´ì„œ item_id ì¡°íšŒ
 			Long itemId = 0L;
 			//Long itemId =  itemRepo.getItemIdFromItemName(CargoDto.getItemName());
 			
-			// category_nameÀ» ÅëÇØ category_id Á¶È¸
-			Long statusId = statusRepository.selectStatusIdByName(cargoDto.getStatusName());
-			
-			// cargo »ı¼º
+			// cargo ìƒì„±
 			for(int i=0; i<cargoDto.getCargoCount(); i++) {
 				cargoRepository.insert(
 							Cargo.builder()
 							.itemId(itemId)
-							.statusId(statusId)
+							.statusId(DEFAULT_STATUS) // ì…ê³ 
 							.build()
 						);
 			}

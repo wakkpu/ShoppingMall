@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import Entity.Consumer;
+import Entity.Membership;
+import dto.LoginResultDto;
 import util.ConnectionPool;
 
 public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
@@ -46,7 +48,8 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			log.info(e.getMessage());
 			throw new Exception("회원가입 에러");
 		} finally {
-			
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
 		}
 		
 		return result;
@@ -76,27 +79,68 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		return null;
 	}
 	
-	public Consumer selectByEmail(String useremail) throws Exception {
-		Consumer consumer = null;
+	public Consumer selectByEmail(String userEmail) throws Exception {
+		Consumer found = null;
 		Connection con = cp.getConnection();
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 		try {
 			pstmt = con.prepareStatement(SQL.consumSelect);
-			pstmt.setString(1, useremail);
+			pstmt.setString(1, userEmail);
 			
 			rset = pstmt.executeQuery();
 			rset.next();
-			consumer = Consumer.builder()
-					.userEmail(rset.getString("userEmail"))
+			found = Consumer.builder()
+					.consumerId(rset.getLong("consumer_id"))
+					.userEmail(userEmail)
+					.password(rset.getString("password"))
+					.userName(rset.getString("user_name"))
 					.build();
 		} catch(Exception e) {
 			log.info(e.getMessage());
 			throw new Exception("조회에러");
 		} finally {
-			
+			closeRset(rset);
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
 		}
-		return consumer;
+		return found;
+	}
+	
+	public String selectMembershipById(Long consumerId) throws Exception {
+		Connection con = cp.getConnection();
+		PreparedStatement pstmt = null;
+		ResultSet rset = null;
+		
+		String grade = null;
+		try {
+			pstmt = con.prepareStatement(SQL.membershipSelect);
+			pstmt.setLong(1, consumerId);
+			
+			rset = pstmt.executeQuery();
+			rset.next();
+			grade = rset.getString("grade");
+		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("조회에러");
+		} finally {
+			closeRset(rset);
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
+		}
+		return grade;
+	}
+	
+	public void closePstmt(PreparedStatement pstmt) throws Exception {
+		if(pstmt != null) {
+			pstmt.close();
+		}
+	}
+	
+	public void closeRset(ResultSet rset) throws Exception {
+		if(rset != null) {
+			rset.close();
+		}
 	}
 
 }

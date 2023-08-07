@@ -18,4 +18,5 @@ public class LoginResultDto {
 	private String password;
 	private String userName;
 	private String grade;
+	private boolean isAdmin;
 }

@@ -43,6 +43,7 @@ public class ConsumerService {
 								.password(found.getPassword())
 								.userName(found.getUserName())
 								.grade(grade)
+								.isAdmin(found.isAdmin())
 								.build();
 		} catch (Exception e) {
 			e.printStackTrace();

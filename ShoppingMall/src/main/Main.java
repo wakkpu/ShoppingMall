@@ -15,7 +15,7 @@ public class Main {
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
 		while(true) {
-			System.out.println("1. 로그인(1) 2. 회원가입 (2)");
+			System.out.println("1. 로그인 2. 회원가입");
 			String cmd = sc.next();
 			if(cmd.equals("1")) {
 				System.out.println("로그인 이메일을 입력해주세요");
@@ -30,8 +30,39 @@ public class Main {
 					break;
 				}
 				loginedUser = consumerService.getUser(loginDto);
-				System.out.println("안녕하세요 " + loginedUser.getUserName() +"님 환영합니다~");
-				System.out.println(loginedUser.getUserName() + "님의 현재 멤버십 등급은 " + loginedUser.getGrade() + "입니다.");
+				if(!loginedUser.isAdmin()) {
+					System.out.println("안녕하세요 " + loginedUser.getUserName() +"님 환영합니다~");
+					System.out.println(loginedUser.getUserName() + "님의 현재 멤버십 등급은 " + loginedUser.getGrade() + "입니다.");
+					System.out.println();
+					cmd = sc.next();
+					System.out.println("1. 장바구니 조회 2. 상품 목록 조회 3. 주문 목록 조회 4. 로그아웃");
+					if(cmd.equals("1")) {
+						
+					} else if(cmd.equals("2")) {
+						
+					} else if(cmd.equals("3")) {
+						
+					} else if(cmd.equals("4")) {
+						loginedUser = null;
+						continue;
+					}
+				} else { //관리자 로그인
+					System.out.println("관리자(admin) 계정입니다");
+					System.out.println("수행할 작업을 선택하세요");
+					cmd = sc.next();
+					System.out.println("1. 창고 목록 조회 2. 상품 목록 조회 3. 주문목록 조회 4. 로그아웃");
+					if(cmd.equals("1")) {
+						
+					} else if(cmd.equals("2")) {
+						
+					} else if(cmd.equals("3")) {
+						
+					} else if(cmd.equals("4")) {
+						loginedUser = null;
+						continue;
+					}
+				}
+				
 			} else if(cmd.equals("2")) {
 				System.out.println("가입하실 이메일을 입력해주세요");
 				boolean checkValid = false;

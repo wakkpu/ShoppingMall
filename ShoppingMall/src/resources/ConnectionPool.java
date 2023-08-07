@@ -1,4 +1,4 @@
-package util;
+package resources;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,9 +13,8 @@ public class ConnectionPool {
 	private List<Connection> connectionPool;
 	private List<Connection> usedConnections = new ArrayList<>();
 	private static int INITIAL_POOL_SIZE = 3;
-	static ResourceBundle rb;
+	static ResourceBundle rb = null;
 	static {
-		rb = null;
 		rb = ResourceBundle.getBundle("mysql", Locale.KOREA);
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

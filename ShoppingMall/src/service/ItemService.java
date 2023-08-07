@@ -25,7 +25,6 @@ public class ItemService {
             query.append(" or category_id = ");
             query.append(categoryDataDto.getCategoryId2());
         }
-        System.out.println(query);
         return itemRepository.selectWithIn(query.toString());
     }
 }

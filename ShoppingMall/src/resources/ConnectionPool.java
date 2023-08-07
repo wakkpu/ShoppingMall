@@ -16,6 +16,7 @@ public class ConnectionPool {
 	static ResourceBundle rb;
 	static {
 		rb = null;
+
 		rb = ResourceBundle.getBundle("mysql", Locale.KOREA);
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

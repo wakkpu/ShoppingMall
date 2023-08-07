@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRepository {
+    CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
     ConnectionPool cp;
     public ItemRepository(){
         try {
@@ -22,7 +23,13 @@ public class ItemRepository {
     }
 
     public List<Item> selectAll(){
-        ResultSet rset = null;
+        RowMapper rowMapper = rset -> Item.builder()
+                .itemId(rset.getLong("item_id"))
+                .itemName(rset.getString("item_name"))
+                .itemPrice(rset.getLong("item_price"))
+                .build();
+        return crudTemplate.selectAll("select * from item",rowMapper);
+        /*ResultSet rset = null;
         Connection con = cp.getConnection();
         PreparedStatement pstmt = null;
         List<Item> itemList = new ArrayList<>();
@@ -52,7 +59,7 @@ public class ItemRepository {
             }
             cp.releaseConnection(con);
         }
-        return itemList;
+        return itemList;*/
     }
 
     public List<Item> selectWithIn(String condition){

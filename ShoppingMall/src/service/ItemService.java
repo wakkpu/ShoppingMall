@@ -1,9 +1,7 @@
 package service;
 
-import Entity.Category;
 import Entity.Item;
 import dto.CategoryDataDto;
-import repo.CartRepository;
 import repo.ItemRepository;
 
 import java.util.List;

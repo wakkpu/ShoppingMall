@@ -1,5 +1,7 @@
 package repo;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +16,11 @@ public interface CRUDRepository<K, V> {
 	
 	public List<V> selectAll() throws Exception;
 	
+	public static void closeResultSet(ResultSet resultSet) throws Exception {
+		if(resultSet != null) resultSet.close();
+	}
+	
+	public static void closePreparedStatement(PreparedStatement pStmt) throws Exception {
+		if(pStmt != null) pStmt.close();
+	}
 }

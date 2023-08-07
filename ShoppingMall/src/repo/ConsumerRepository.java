@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import Entity.Consumer;
 import Entity.Membership;
 import dto.LoginResultDto;
-import util.ConnectionPool;
+import resources.ConnectionPool;
 
 public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 	Logger log = Logger.getLogger("ConsumerRepo");

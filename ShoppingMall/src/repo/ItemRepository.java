@@ -1,10 +1,13 @@
 package repo;
 
+
+import Entity.Item;
+import resources.ConnectionPool;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -13,56 +16,23 @@ import Entity.Item;
 import resources.ConnectionPool;
 
 public class ItemRepository {
-    CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
-	ConnectionPool connectionPool;
+  CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
+  ConnectionPool connectionPool;
 	
 	Logger logger = Logger.getLogger("Cargo Repository");
-	public ItemRepository() {
-		try {
-			connectionPool = ConnectionPool.create();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
+  RowMapper rowMapper;
 
-    public List<Item> selectAll(){
-        RowMapper rowMapper = rset -> Item.builder()
-                .itemId(rset.getLong("item_id"))
-                .itemName(rset.getString("item_name"))
-                .itemPrice(rset.getLong("item_price"))
-                .build();
-        return crudTemplate.selectAll("select * from item",rowMapper);
-        /*ResultSet rset = null;
-        Connection con = cp.getConnection();
-        PreparedStatement pstmt = null;
-        List<Item> itemList = new ArrayList<>();
-        try {
-            pstmt = con.prepareStatement("select * from item");
-            rset = pstmt.executeQuery();
-            while(rset.next()){
-                Item item = Item.builder()
-                        .itemId(rset.getLong("item_id"))
-                        .itemName(rset.getString("item_name"))
-                        .itemPrice(rset.getLong("item_price"))
-                        .build();
-                itemList.add(item);
-            }
-        }catch(Exception e){
-            throw new RuntimeException("DB 조회에 실패 하였습니다.");
-        }finally {
-            try {
-                CRUDRepository.closeRset(rset);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
-        }
-        return itemList;*/
+    public ItemRepository(){
+      try {
+        connectionPool = ConnectionPool.create();
+      } catch(SQLException e) {
+        e.printStackTrace();
+      }
+          rowMapper = rset -> Item.builder()
+                  .itemId(rset.getLong("item_id"))
+                  .itemName(rset.getString("item_name"))
+                  .itemPrice(rset.getLong("item_price"))
+                  .build();
     }
 
     public List<Item> selectWithIn(String condition){
@@ -102,6 +72,10 @@ public class ItemRepository {
         return itemList;
     }
 	
+
+    public List<Item> select(String query){
+        return crudTemplate.select(query,rowMapper);
+    }
 
 
 	public Optional<Item> selectItem(Long itemId) throws Exception {

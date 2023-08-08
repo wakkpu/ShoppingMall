@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-
 import Entity.Consumer;
 import Entity.Membership;
 import dto.LoginResultDto;
@@ -56,14 +55,49 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 
 	@Override
 	public int update(Consumer v) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		Connection con = cp.getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(SQL.consumUpdate);
+			pstmt.setString(1, v.getUserName());
+			pstmt.setString(2, v.getPhoneNumber());
+			pstmt.setString(3, v.getAddress());
+			pstmt.setString(4, v.getUserEmail());
+			
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("회원 정보 수정 에러");
+		} finally {
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
+		}
+		
+		return result;
 	}
 
 	@Override
 	public int delete(Long k) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		Connection con = cp.getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(SQL.consumDelete);
+			pstmt.setLong(1, k);
+			
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("회원 삭제 에러");
+		} finally {
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
+		}
+		
+		return result;
 	}
 
 	@Override

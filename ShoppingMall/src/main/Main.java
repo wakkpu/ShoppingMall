@@ -6,6 +6,7 @@ import Entity.Consumer;
 import dto.JoinDto;
 import dto.LoginDto;
 import dto.LoginResultDto;
+import dto.MembershipDto;
 import service.ConsumerService;
 
 public class Main {
@@ -34,9 +35,17 @@ public class Main {
 					System.out.println("안녕하세요 " + loginedUser.getUserName() +"님 환영합니다~");
 					System.out.println(loginedUser.getUserName() + "님의 현재 멤버십 등급은 " + loginedUser.getGrade() + "입니다.");
 					System.out.println();
+					System.out.println("0. 회원 정보 조회 1. 장바구니 조회 2. 상품 목록 조회 3. 주문 목록 조회 4. 로그아웃");
 					cmd = sc.next();
-					System.out.println("1. 장바구니 조회 2. 상품 목록 조회 3. 주문 목록 조회 4. 로그아웃");
-					if(cmd.equals("1")) {
+					if(cmd.equals("0")) {
+						MembershipDto membership = consumerService.getMembershipDetail(loginedUser.getConsumerId());
+						System.out.println("== " + loginedUser.getUserName() + "님의 회원정보 조회 ==");
+						System.out.println("사용자명: " + loginedUser.getUserName());
+						System.out.println("이메일: " + loginedUser.getUserEmail());
+						System.out.println("전화번호: " + loginedUser.getPhoneNumber());
+						System.out.println("기본 배송지: " + loginedUser.getAddress());
+						System.out.println("*멤버십: " + membership.getGrade() + " (할인률: " + membership.getDiscountRate() + "% 적용)");
+					} else if(cmd.equals("1")) {
 						
 					} else if(cmd.equals("2")) {
 						

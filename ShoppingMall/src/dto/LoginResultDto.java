@@ -14,8 +14,12 @@ import lombok.ToString;
 @ToString
 @Builder
 public class LoginResultDto {
+	private Long consumerId;
+	private Long membershipId;
 	private String userEmail;
 	private String password;
+	private String phoneNumber;
+	private String address;
 	private String userName;
 	private String grade;
 	private boolean isAdmin;

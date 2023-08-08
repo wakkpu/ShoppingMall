@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+
 import Entity.Consumer;
 import Entity.Membership;
 import dto.LoginResultDto;
@@ -56,8 +59,31 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 
 	@Override
 	public int update(Consumer v) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		Connection con = cp.getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(SQL.consumInsert);
+			pstmt.setLong(1, v.getConsumerId());
+			pstmt.setLong(2, v.getMembershipId());
+			pstmt.setString(3, v.getUserEmail());
+			pstmt.setString(4, v.getPassword());
+			pstmt.setString(5, v.getPhoneNumber());
+			pstmt.setString(6, v.getAddress());
+			pstmt.setString(7, v.getUserName());
+			pstmt.setInt(8, (v.isAdmin()) ? 1 : 0);
+			
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("회원정보 수정 에러");
+		} finally {
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
+		}
+		
+		return result;
 	}
 
 	@Override

@@ -10,11 +10,12 @@ public class ItemService {
     ItemRepository itemRepository = new ItemRepository();
 
     public List<Item> selectAll() {
-        return itemRepository.selectAll();
+        return itemRepository.select("select * from item");
     }
 
     public List<Item> selectWithIn(CategoryDataDto categoryDataDto) {
         StringBuilder query = new StringBuilder();
+        query.append("select * from item ");
         query.append("where category_id=");
         query.append(categoryDataDto.getCategoryId3());
         if (categoryDataDto.getCategoryId1() != 0L) {
@@ -25,6 +26,6 @@ public class ItemService {
             query.append(" or category_id = ");
             query.append(categoryDataDto.getCategoryId2());
         }
-        return itemRepository.selectWithIn(query.toString());
+        return itemRepository.select(query.toString());
     }
 }

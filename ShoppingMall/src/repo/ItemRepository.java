@@ -1,26 +1,29 @@
 package repo;
 
-import Entity.Item;
-import dto.CartItemDto;
-import resources.ConnectionPool;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
+
+import Entity.Item;
+import resources.ConnectionPool;
 
 public class ItemRepository {
     CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
-    ConnectionPool cp;
-    public ItemRepository(){
-        try {
-            cp = ConnectionPool.create();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	ConnectionPool connectionPool;
+	
+	Logger logger = Logger.getLogger("Cargo Repository");
+	public ItemRepository() {
+		try {
+			connectionPool = ConnectionPool.create();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
     public List<Item> selectAll(){
         RowMapper rowMapper = rset -> Item.builder()
@@ -64,7 +67,7 @@ public class ItemRepository {
 
     public List<Item> selectWithIn(String condition){
         ResultSet rset = null;
-        Connection con = cp.getConnection();
+        Connection con = connectionPool.getConnection();
         PreparedStatement pstmt = null;
         List<Item> itemList = new ArrayList<>();
         try {
@@ -94,22 +97,12 @@ public class ItemRepository {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            cp.releaseConnection(con);
+            connectionPool.releaseConnection(con);
         }
         return itemList;
     }
+	
 
-	ConnectionPool connectionPool;
-	
-	Logger logger = Logger.getLogger("Cargo Repository");
-	
-	public ItemRepository() {
-		try {
-			connectionPool = ConnectionPool.create();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public Optional<Item> selectItem(Long itemId) throws Exception {
 

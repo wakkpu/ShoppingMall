@@ -27,4 +27,12 @@ public interface CRUDRepository<K, V> {
 		}
 	}
 	
+	public static void closeResultSet(ResultSet resultSet) throws Exception {
+		if(resultSet != null) resultSet.close();
+	}
+	
+	public static void closePreparedStatement(PreparedStatement pStmt) throws Exception {
+		if(pStmt != null) pStmt.close();
+	}
+
 }

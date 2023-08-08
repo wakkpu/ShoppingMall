@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString
 @Builder
 public class MembershipDto {
-	private Long membershipId;
+	private Long membershipId;//key
 	private String grade;
 	private double discountRate;
 	private int requirement;

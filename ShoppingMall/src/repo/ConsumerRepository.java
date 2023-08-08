@@ -43,10 +43,9 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			pstmt.setInt(8, (v.isAdmin()) ? 1 : 0);
 			
 			result = pstmt.executeUpdate();
-			log.info("ȸ������ �Ϸ�");
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("ȸ������ ����");
+			throw new Exception("회원가입 에러");
 		} finally {
 			closePstmt(pstmt);
 			cp.releaseConnection(con);
@@ -100,7 +99,7 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 					.build();
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("��ȸ����");
+			throw new Exception("consumer 조회 에러");
 		} finally {
 			closeRset(rset);
 			closePstmt(pstmt);
@@ -128,7 +127,7 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 //			grade = rset.getString("grade");
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("��ȸ����");
+			throw new Exception("멤버십 조회 에러");
 		} finally {
 			closeRset(rset);
 			closePstmt(pstmt);

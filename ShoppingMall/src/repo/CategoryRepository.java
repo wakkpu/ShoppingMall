@@ -4,6 +4,8 @@ import Entity.Category;
 import Entity.Item;
 import dto.CategoryDataDto;
 import dto.CategoryDto;
+
+import java.sql.Connection;
 import java.util.List;
 
 public class CategoryRepository {
@@ -39,5 +41,9 @@ public class CategoryRepository {
 
     public List<CategoryDto> getChildCategory(String query){
         return categoryDtoTemplate.select(query,categoryDtoRowMapper);
+    }
+
+    public int insertCategory(Connection connection, String query){
+        return categoryDtoTemplate.insert(connection,query);
     }
 }

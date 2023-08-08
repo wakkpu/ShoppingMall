@@ -34,6 +34,32 @@ public class ItemRepository {
         return crudTemplate.select(query,rowMapper);
     }
 
+	public int insertItem(Connection connection, Item item){
+		int result = 0;
+		Connection con = connection;
+		if(connection == null){
+			connectionPool.getConnection();
+		}
+
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = con.prepareStatement("insert into item(category_id,item_name,item_price) values(?,?,?)");
+			pstmt.setLong(1, item.getCategoryId());
+			pstmt.setString(2, item.getItemName());
+			pstmt.setLong(3, item.getItemPrice());
+			result = pstmt.executeUpdate();
+		}catch(Exception e){
+			throw new RuntimeException();
+		}finally {
+			try {
+				CRUDRepository.closePstmt(pstmt);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			connectionPool.releaseConnection(con);
+		}
+		return result;
+	}
 
 	public Optional<Item> selectItem(Long itemId) throws Exception {
 

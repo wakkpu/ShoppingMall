@@ -20,7 +20,6 @@ public class CartMain {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public void goCart() throws IOException {
-        while (true) {
             System.out.println("1. 장바구니 담기 | 2. 장바구니 갯수 수정 | 3. 장바구니 삭제 | 4. 장바구니 조회 | 5. 주문하기 | 6. 그만보기");
             int choiceNumber = Integer.parseInt(br.readLine());
 
@@ -40,10 +39,8 @@ public class CartMain {
                 case 5:
                     orderCart();
                     break;
-                default:
-                    return;
             }
-        }
+
     }
 
     private void carryCart() throws IOException {

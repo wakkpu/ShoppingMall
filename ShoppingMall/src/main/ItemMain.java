@@ -3,7 +3,6 @@ package main;
 import Entity.Category;
 import Entity.Item;
 import dto.CategoryDto;
-import service.CartService;
 import service.CategoryService;
 import service.ItemService;
 
@@ -18,7 +17,7 @@ public class ItemMain {
 
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    private void goItem() throws IOException {
+    public void goItem() throws IOException {
         while(true) {
             System.out.println("1. 상품 목록 조회 | 2.종료");
             int choiceNumber = Integer.parseInt(br.readLine());
@@ -56,7 +55,7 @@ public class ItemMain {
                 choiceNumber = Integer.parseInt(br.readLine());
 
                 if (choiceNumber == 1) {
-                    System.out.println("코드 입력");
+                       System.out.println("코드 입력");
                     choiceNumber = Integer.parseInt(br.readLine());
                     List<Item> items = categoryService.selectWithCategoryId(choiceNumber);
                     for (Item item : items) {

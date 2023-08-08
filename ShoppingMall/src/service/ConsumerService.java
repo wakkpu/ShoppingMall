@@ -16,7 +16,7 @@ public class ConsumerService {
 	private ConsumerRepository consumerRepository = new ConsumerRepository();
 	
 	/**
-	 * 
+	 * 회원가입하기
 	 * @param joinDto
 	 */
 	public void register(JoinDto joinDto) {
@@ -31,7 +31,9 @@ public class ConsumerService {
 	}
 	
 	/**
+	 * email을 통해 해당 유저를 찾고 추가 정보를 합해 LoginResultDto 반환
 	 * @param loginDto
+	 * @return LoginResultDto
 	 */
 	public LoginResultDto getUser(LoginDto loginDto) {
 		Consumer found = null;
@@ -57,7 +59,9 @@ public class ConsumerService {
 	}
 	
 	/**
-	 * 
+	 * 로그인된 user의 memebership정보 중 grade 정보 가져오기
+	 * @param logined
+	 * @return
 	 */
 	public String getLoginedMembership(Consumer logined) {
 		String grade = null;
@@ -70,7 +74,8 @@ public class ConsumerService {
 		return grade;
 	}
 	
-	/** 
+	/**
+	 * 로그인 시, user가 입력한 password가 db정보와 맞는지 확인
 	 * @param loginDto
 	 * @return boolean
 	 */
@@ -82,6 +87,11 @@ public class ConsumerService {
 		return true;
 	}
 	
+	/**
+	 * consumerId를 통해 해당 user의 membership정보 가져오기
+	 * @param consumerId
+	 * @return membershipDto
+	 */
 	public MembershipDto getMembershipDetail(Long consumerId) {
 		MembershipDto membershipDto = null;
 		try {
@@ -91,7 +101,6 @@ public class ConsumerService {
 								.discountRate(membership.getDiscountRate())
 								.build();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return membershipDto;

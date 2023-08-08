@@ -80,8 +80,24 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 
 	@Override
 	public int delete(Long k) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		Connection con = cp.getConnection();
+		PreparedStatement pstmt = null;
+		
+		try {
+			pstmt = con.prepareStatement(SQL.consumDelete);
+			pstmt.setLong(1, k);
+			
+			result = pstmt.executeUpdate();
+		} catch(Exception e) {
+			log.info(e.getMessage());
+			throw new Exception("회원 삭제 에러");
+		} finally {
+			closePstmt(pstmt);
+			cp.releaseConnection(con);
+		}
+		
+		return result;
 	}
 
 	@Override

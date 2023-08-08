@@ -1,10 +1,12 @@
 package Entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
+@Data
 @Builder
-@Getter
+@AllArgsConstructor
 public class Item {
 	private Long itemId;
 	private long categoryId;

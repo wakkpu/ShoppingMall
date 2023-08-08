@@ -1,5 +1,6 @@
-package Entity;
+package dto;
 
+import Entity.Consumer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,13 +12,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @Builder
-public class Consumer {
+public class JoinDto {
 	private Long consumerId;
-	private Long membershipId;
 	private String userEmail;
 	private String password;
 	private String phoneNumber;
 	private String address;
 	private String userName;
-	private boolean isAdmin;
 }

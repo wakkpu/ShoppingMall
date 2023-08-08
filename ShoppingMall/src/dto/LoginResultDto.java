@@ -1,6 +1,5 @@
-package Entity;
+package dto;
 
-import dto.MembershipDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +13,14 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class Membership {
+public class LoginResultDto {
+	private Long consumerId;
 	private Long membershipId;
+	private String userEmail;
+	private String password;
+	private String phoneNumber;
+	private String address;
+	private String userName;
 	private String grade;
-	private double discountRate;
-	private int requirement;
+	private boolean isAdmin;
 }

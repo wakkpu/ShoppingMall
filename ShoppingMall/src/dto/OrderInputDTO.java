@@ -1,14 +1,16 @@
 package dto;
 
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 @Builder
-@Getter
+@AllArgsConstructor
 public class OrderInputDTO {
-
-    private long itemId;
-    private long itemQuantity;
+	
+	private long itemId;
+	private long itemQuantity;	
 
 }

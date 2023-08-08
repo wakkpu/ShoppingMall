@@ -13,8 +13,10 @@ public class ConnectionPool {
 	private List<Connection> connectionPool;
 	private List<Connection> usedConnections = new ArrayList<>();
 	private static int INITIAL_POOL_SIZE = 3;
-	static ResourceBundle rb = null;
+	static ResourceBundle rb;
 	static {
+		rb = null;
+
 		rb = ResourceBundle.getBundle("mysql", Locale.KOREA);
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

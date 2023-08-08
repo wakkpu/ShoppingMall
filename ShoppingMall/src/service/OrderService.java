@@ -2,8 +2,6 @@ package service;
 
 import java.util.List;
 
-import Entity.Item;
-import Entity.OrderDetail;
 import Entity.OrderSet;
 import dto.CancelInput;
 import dto.ItemQuntityDto;

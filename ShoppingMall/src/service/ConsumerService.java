@@ -23,7 +23,7 @@ public class ConsumerService {
 		Consumer newcomer = new Consumer(joinDto.getConsumerId(), 1L, joinDto.getUserEmail(),
 											joinDto.getPassword(), joinDto.getPhoneNumber(),joinDto.getAddress(), joinDto.getUserName(), false);
 		try {
-			consumerRepository.insert(newcomer);
+			consumerRepository.insert(null,newcomer);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -24,10 +24,12 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		}
 	}
 	
-	@Override
-	public int insert(Consumer v) throws Exception {
+	public int insert(Connection connection, Consumer v){
 		int result = 0;
-		Connection con = cp.getConnection();
+		Connection con = connection;
+		if(con==null){
+			con = cp.getConnection();
+		}
 		PreparedStatement pstmt = null;
 		
 		try {
@@ -44,13 +46,22 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			result = pstmt.executeUpdate();
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("회원가입 에러");
+			throw new RuntimeException("회원가입 에러");
 		} finally {
-			closePstmt(pstmt);
+			try {
+				closePstmt(pstmt);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 			cp.releaseConnection(con);
 		}
 		
 		return result;
+	}
+
+	@Override
+	public int insert(Consumer consumer) throws Exception {
+		return 0;
 	}
 
 	@Override
@@ -79,7 +90,7 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 	}
 
 	@Override
-	public int delete(Long k) throws Exception {
+	public int delete(Long k){
 		int result = 0;
 		Connection con = cp.getConnection();
 		PreparedStatement pstmt = null;
@@ -91,9 +102,13 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 			result = pstmt.executeUpdate();
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("회원 삭제 에러");
+			throw new RuntimeException("회원 삭제 에러");
 		} finally {
-			closePstmt(pstmt);
+			try {
+				closePstmt(pstmt);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 			cp.releaseConnection(con);
 		}
 		
@@ -112,7 +127,7 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 		return null;
 	}
 	
-	public Consumer selectByEmail(String userEmail) throws Exception {
+	public Consumer selectByEmail(String userEmail){
 		Consumer found = null;
 		Connection con = cp.getConnection();
 		PreparedStatement pstmt = null;
@@ -133,10 +148,18 @@ public class ConsumerRepository implements CRUDRepository<Long, Consumer> {
 					.build();
 		} catch(Exception e) {
 			log.info(e.getMessage());
-			throw new Exception("consumer 조회 에러");
+			throw new RuntimeException("consumer 조회 에러");
 		} finally {
-			closeRset(rset);
-			closePstmt(pstmt);
+			try {
+				closeRset(rset);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+			try {
+				closePstmt(pstmt);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 			cp.releaseConnection(con);
 		}
 		return found;

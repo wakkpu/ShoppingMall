@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
 
 public class CartMain {
     CartService cartService = new CartService();
-    ItemService itemService = new ItemService();
-    CategoryService categoryService = new CategoryService();
 
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 

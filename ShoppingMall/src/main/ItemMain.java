@@ -13,7 +13,6 @@ import java.io.InputStreamReader;
 import java.util.List;
 
 public class ItemMain {
-    CartService cartService = new CartService();
     ItemService itemService = new ItemService();
     CategoryService categoryService = new CategoryService();
 

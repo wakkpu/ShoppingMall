@@ -18,6 +18,7 @@ public class RootTest {
     void before() throws SQLException {
         connectionPool = ConnectionPool.create();
         connection = connectionPool.getConnection();
+        System.out.println(connection);
         connection.setAutoCommit(false);
     }
 

@@ -107,10 +107,11 @@ public class CRUDTemplate<T> {
     }
 
     public int insert(Connection connection,String query){ // 트랜잭션 처리를 위한 connection 파라미터 추가
+        System.out.println(query);
         int result = 0;
         Connection con = connection;
         if(connection == null){
-            cp.getConnection();
+            con = cp.getConnection();
         }
         PreparedStatement pstmt = null;
         try {

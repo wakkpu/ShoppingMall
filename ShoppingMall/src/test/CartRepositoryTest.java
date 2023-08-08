@@ -38,9 +38,9 @@ public class CartRepositoryTest extends RootTest{
         ConsumerRepository consumerRepository = new ConsumerRepository();
         consumerId = crudTemplate.selectOneColumn("select IFNULL(MAX(consumer_id) + 1,1) as consumer_id from consumer", Long.class);
 
-        MembershipRepository membershipRepository = new MembershipRepository();
-
-        membershipRepository.insertMembership(connection, "insert into membership select IFNULL(MAX(membership_id) + 1,1) as membership_id, 'CSH',30.0,0 from membership");
+//        MembershipRepository membershipRepository = new MembershipRepository();
+//
+//        membershipRepository.insertMembership(connection, "insert into membership select IFNULL(MAX(membership_id) + 1,1) as membership_id, 'CSH',30.0,0 from membership");
         //Consumer consumer = Consumer.builder().consumerId(consumerId).membershipId(null).userEmail("seonghun7304@naver.com").password("1234").phoneNumber("01012345678").address("집좀보내주세요").userName("최성훈").isAdmin(false).build();
         //consumerRepository.insert(connection, consumer);
 

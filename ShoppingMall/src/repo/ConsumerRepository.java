@@ -18,18 +18,12 @@ public class ConsumerRepository {
 	RowMapper consumerRowMapper;
 	RowMapper membershipRowMapper;
 
-	ConnectionPool cp;
-
-
 	CRUDTemplate<Consumer> consumerCRUDTemplate = new CRUDTemplate<>();
 	CRUDTemplate<Membership> membershipCRUDTemplate = new CRUDTemplate<>();
+
+	ConnectionPool cp;
 	
 	public ConsumerRepository()  {
-		try {
-			cp = ConnectionPool.create();
-		} catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
 		consumerRowMapper = new RowMapper() {
 			@Override
 			public Object mapRow(ResultSet rset) throws SQLException {
@@ -78,39 +72,6 @@ public class ConsumerRepository {
 				.append(")");
 
 		return consumerCRUDTemplate.insert(connection, sql.toString());
-//	}
-//	public int insert(Connection connection, Consumer v){
-//		int result = 0;
-//		Connection con = connection;
-//		if(con==null){
-//			con = cp.getConnection();
-//		}
-//		PreparedStatement pstmt = null;
-//
-//		try {
-//			pstmt = con.prepareStatement(SQL.consumInsert);
-//			pstmt.setLong(1, v.getMembershipId());
-//			pstmt.setString(2, v.getUserEmail());
-//			pstmt.setString(3, v.getPassword());
-//			pstmt.setString(4, v.getPhoneNumber());
-//			pstmt.setString(5, v.getAddress());
-//			pstmt.setString(6, v.getUserName());
-//			pstmt.setInt(7, (v.isAdmin()) ? 1 : 0);
-//
-//			result = pstmt.executeUpdate();
-//		} catch(Exception e) {
-//			log.info(e.getMessage());
-//			throw new RuntimeException("회원가입 에러");
-//		} finally {
-//			try {
-//				CRUDRepository.closePstmt(pstmt);
-//			} catch (Exception e) {
-//				throw new RuntimeException(e);
-//			}
-//			cp.releaseConnection(con);
-//		}
-//
-//		return result;
 	}
 
 	public Consumer selectByEmail(String userEmail) {
@@ -119,41 +80,6 @@ public class ConsumerRepository {
 		return consumerCRUDTemplate.selectOne(sql, consumerRowMapper);
 	}
 
-//	public Consumer selectByEmail(String userEmail){
-//		Consumer found = null;
-//		Connection con = cp.getConnection();
-//		PreparedStatement pstmt = null;
-//		ResultSet rset = null;
-//		try {
-//			pstmt = con.prepareStatement(SQL.consumSelect);
-//			pstmt.setString(1, userEmail);
-//
-//			rset = pstmt.executeQuery();
-//			rset.next();
-//			found = Consumer.builder()
-//					.consumerId(rset.getLong("consumer_id"))
-//					.userEmail(userEmail)
-//					.phoneNumber(rset.getString("phone_number"))
-//					.address(rset.getString("address"))
-//					.password(rset.getString("password"))
-//					.userName(rset.getString("user_name"))
-//					.build();
-//		} catch(Exception e) {
-//			log.info(e.getMessage());
-//			throw new RuntimeException("consumer 조회 에러");
-//		} finally {
-//			try {
-//			} catch (Exception e) {
-//				throw new RuntimeException(e);
-//			}
-//			try {
-//			} catch (Exception e) {
-//				throw new RuntimeException(e);
-//			}
-//			cp.releaseConnection(con);
-//		}
-//		return found;
-//	}
 
 	public Membership selectMembershipById(Long consumerId) throws Exception {
 		Connection con = cp.getConnection();

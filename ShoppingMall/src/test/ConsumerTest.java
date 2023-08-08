@@ -23,8 +23,6 @@ public class ConsumerTest extends RootTest {
                 .membershipId(1L)
                 .build();
 
-//        System.out.println(connection.toString());
-        System.out.println(con);
         consumerRepository.insert(connection, con);
 
         Consumer select = consumerRepository.selectByEmail("test3@test.com");

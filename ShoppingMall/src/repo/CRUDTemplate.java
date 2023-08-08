@@ -18,7 +18,43 @@ public class CRUDTemplate<T> {
         }
     }
 
-    public List<T> select(String query, RowMapper<T> rowMapper) {
+    public List<T> select(String query, RowMapper<T> rowMapper, Object... params) {
+        ResultSet rset = null;
+        Connection con = cp.getConnection();
+        PreparedStatement pstmt = null;
+        List<T> itemList = new ArrayList<>();
+        try {
+            pstmt = con.prepareStatement(query);
+
+            // 파라미터 바인딩
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
+
+            rset = pstmt.executeQuery();
+            while (rset.next()) {
+                T item = rowMapper.mapRow(rset);
+                itemList.add(item);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("DB 조회에 실패하였습니다.");
+        } finally {
+            try {
+                CRUDRepository.closeRset(rset);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                CRUDRepository.closePstmt(pstmt);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            cp.releaseConnection(con);
+        }
+        return itemList;
+    }
+
+/*    public List<T> select(String query, RowMapper<T> rowMapper) {
         ResultSet rset = null;
         Connection con = cp.getConnection();
         PreparedStatement pstmt = null;
@@ -46,7 +82,7 @@ public class CRUDTemplate<T> {
             cp.releaseConnection(con);
         }
         return itemList;
-    }
+    }*/
 
     public T selectOne(String query, RowMapper<T> rowMapper) {
         ResultSet rset = null;

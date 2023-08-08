@@ -1,12 +1,28 @@
 package repo;
 
 import Entity.Item;
+import resources.ConnectionPool;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Logger;
 
 public class ItemRepository {
     CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
     RowMapper rowMapper;
+	ConnectionPool connectionPool;
+
+	Logger logger = Logger.getLogger("Cargo Repository");
     public ItemRepository(){
+		try {
+			connectionPool = ConnectionPool.create();
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
         rowMapper = rset -> Item.builder()
                 .itemId(rset.getLong("item_id"))
                 .itemName(rset.getString("item_name"))
@@ -18,17 +34,6 @@ public class ItemRepository {
         return crudTemplate.select(query,rowMapper);
     }
 
-	ConnectionPool connectionPool;
-	
-	Logger logger = Logger.getLogger("Cargo Repository");
-	
-	public ItemRepository() {
-		try {
-			connectionPool = ConnectionPool.create();
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-	}
 
 	public Optional<Item> selectItem(Long itemId) throws Exception {
 

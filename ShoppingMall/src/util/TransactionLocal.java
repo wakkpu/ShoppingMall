@@ -15,11 +15,11 @@ public class TransactionLocal {
 
     static{
         transactionLocal = new TransactionLocal();
-        try {
-            cp = ConnectionPool.create();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            cp = ConnectionPool.create();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     private TransactionLocal(){}

@@ -1,32 +1,44 @@
 package repo;
 
-import resources.ConnectionPool;
+import util.TransactionLocal;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CRUDTemplate<T> {
-    ConnectionPool cp;
-    public CRUDTemplate(){
+    public int insert(String query, Object ... params){
+        int result;
+        /**
+         * 커넥션 관련 관리 생각해야 할 듯?
+         */
+        Connection con = TransactionLocal.transactionLocal.createConnection();
+
+        PreparedStatement pstmt = null;
         try {
-            cp = ConnectionPool.create();
-        } catch (SQLException e) {
+            pstmt = con.prepareStatement(query);
+            for (int i = 0; i < params.length; i++) { // 파라미터가 존재하는 경우
+                pstmt.setObject(i + 1, params[i]); // 알맞은 타입으로 바인딩
+            }
+            result = pstmt.executeUpdate();
+        }catch(Exception e){
             throw new RuntimeException(e);
+        }finally {
+            closeResources(null, pstmt, con);
         }
+        return result;
     }
 
     public List<T> select(String query, RowMapper<T> rowMapper, Object... params) {
         ResultSet rset = null;
-        Connection con = cp.getConnection();
+        Connection con = TransactionLocal.transactionLocal.createConnection();
         PreparedStatement pstmt = null;
         List<T> itemList = new ArrayList<>();
         try {
             pstmt = con.prepareStatement(query);
 
-            // 파라미터 바인딩
             for (int i = 0; i < params.length; i++) {
                 pstmt.setObject(i + 1, params[i]);
             }
@@ -37,132 +49,74 @@ public class CRUDTemplate<T> {
                 itemList.add(item);
             }
         } catch (Exception e) {
-            throw new RuntimeException("DB 조회에 실패하였습니다.");
+            throw new RuntimeException("DB 조회에 실패하였습니다.",e);
         } finally {
-            try {
-                CRUDRepository.closeRset(rset);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
+            closeResources(rset, pstmt, con);
         }
         return itemList;
     }
 
-/*    public List<T> select(String query, RowMapper<T> rowMapper) {
-        ResultSet rset = null;
-        Connection con = cp.getConnection();
-        PreparedStatement pstmt = null;
-        List<T> itemList = new ArrayList<>();
-        try {
-            pstmt = con.prepareStatement(query);
-            rset = pstmt.executeQuery();
-            while (rset.next()) {
-                T item = rowMapper.mapRow(rset);
-                itemList.add(item);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("DB 조회에 실패하였습니다.");
-        } finally {
-            try {
-                CRUDRepository.closeRset(rset);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
-        }
-        return itemList;
-    }*/
 
-    public T selectOne(String query, RowMapper<T> rowMapper) {
+    public T selectOne(String query, RowMapper<T> rowMapper, Object... params) {
         ResultSet rset = null;
-        Connection con = cp.getConnection();
+        Connection con = TransactionLocal.transactionLocal.createConnection();
         PreparedStatement pstmt = null;
         T result = null;
         try {
             pstmt = con.prepareStatement(query);
+            for (int i = 0; i < params.length; i++) {
+                pstmt.setObject(i + 1, params[i]);
+            }
             rset = pstmt.executeQuery();
             if (rset.next()) {
                 result = rowMapper.mapRow(rset);
             }
         } catch (Exception e) {
-            throw new RuntimeException("DB 조회에 실패하였습니다.");
+            throw new RuntimeException("DB 조회에 실패하였습니다.",e);
         } finally {
-            try {
-                CRUDRepository.closeRset(rset);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
+            closeResources(rset, pstmt, con);
         }
         return result;
     }
 
-    public <T> T selectOneColumn(String query, Class<T> returnType) {
+    /**
+        해당 메소드는 하나의 결과 값이 필요한 경우 사용되는 메소드
+        query : 실행될 실제 쿼리( select MAX(item_id) from item )
+        returnType : query를 실행하고 얻기를 희망하는 타입 위의 경우 Long임
+
+        fetchSingleValue("select MAX(item_id) from item", Long.class)
+     */
+    public <T> T fetchSingleValue(String query, Class<T> returnType) {
         ResultSet rset = null;
-        Connection con = cp.getConnection();
+        Connection con = TransactionLocal.transactionLocal.createConnection();
         PreparedStatement pstmt = null;
         T result = null;
         try {
             pstmt = con.prepareStatement(query);
             rset = pstmt.executeQuery();
             if (rset.next()) {
-                result = returnType.cast(rset.getObject(1)); // 첫 번째 컬럼의 값을 가져와 캐스팅
+                result = returnType.cast(rset.getObject(1));
             }
         } catch (Exception e) {
             throw new RuntimeException("DB 조회에 실패하였습니다.", e);
         } finally {
-            try {
-                CRUDRepository.closeRset(rset);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
+            closeResources(rset, pstmt, con);
         }
         return result;
     }
 
-    public int insert(Connection connection,String query){ // 트랜잭션 처리를 위한 connection 파라미터 추가
-        System.out.println(query);
-        int result = 0;
-        Connection con = connection;
-        if(connection == null){
-            con = cp.getConnection();
-        }
-        PreparedStatement pstmt = null;
+    private void closeResources(ResultSet rset, PreparedStatement pstmt, Connection con) {
         try {
-            pstmt = con.prepareStatement(query);
-            result = pstmt.executeUpdate();
-        }catch(Exception e){
-            throw new RuntimeException();
-        }finally {
-            try {
-                CRUDRepository.closePstmt(pstmt);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            cp.releaseConnection(con);
+            CRUDRepository.closeRset(rset);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return result;
+        try {
+            CRUDRepository.closePstmt(pstmt);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        //TransactionLocal.transactionLocal.closeConnection();
+        //cp.releaseConnection(con);
     }
 }

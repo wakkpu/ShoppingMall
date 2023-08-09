@@ -1,16 +1,14 @@
 package repo;
 
+import Entity.Consumer;
+import Entity.Membership;
+import resources.ConnectionPool;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
 import java.util.logging.Logger;
-import Entity.Consumer;
-import Entity.Membership;
-import dto.LoginResultDto;
-import resources.ConnectionPool;
 
 public class ConsumerRepository {
 	Logger log = Logger.getLogger("ConsumerRepo");
@@ -53,30 +51,13 @@ public class ConsumerRepository {
 	}
 
 	public int insert(Connection connection,Consumer consumer) {
-		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO consumer(user_email, password, phone_number, address, user_name, is_admin, membership_id) ")
-				.append(" values(\"")
-				.append(consumer.getUserEmail())
-				.append("\", \"")
-				.append(consumer.getPassword())
-				.append("\", \"")
-				.append(consumer.getPhoneNumber())
-				.append("\", \"")
-				.append(consumer.getAddress())
-				.append("\", \"")
-				.append(consumer.getUserName())
-				.append("\", ")
-				.append(consumer.isAdmin())
-				.append(", ")
-				.append(consumer.getMembershipId())
-				.append(")");
-
-		return consumerCRUDTemplate.insert(connection, sql.toString());
+		Object[] obj = {consumer.getUserEmail(), consumer.getPassword(), consumer.getPhoneNumber(),
+						consumer.getAddress(), consumer.getUserName(), consumer.isAdmin(), consumer.getMembershipId()};
+		return consumerCRUDTemplate.insert(SQL.consumInsert,obj);
 	}
 
 	public Consumer selectByEmail(String userEmail) {
 		String sql = "SELECT * FROM consumer WHERE user_email = \"" + userEmail +"\"";
-		System.out.println(sql);
 		return consumerCRUDTemplate.selectOne(sql, consumerRowMapper);
 	}
 

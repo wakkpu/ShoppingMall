@@ -2,7 +2,7 @@ package repo;
 
 public class SQL {
 	public static String consumInsert =
-			"INSERT INTO consumer(membership_id, user_email, password, phone_number, address, user_name, is_admin) VALUES(?, ?, ?, ?, ?, ?, ?)";
+			"INSERT INTO consumer(user_email, password, phone_number, address, user_name, is_admin, membership_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
 	public static String consumSelect = 
 			"SELECT * FROM consumer WHERE user_email = ?";
 	public static String consumUpdate = 

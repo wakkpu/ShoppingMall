@@ -19,6 +19,6 @@ public class MembershipRepository {
     }
 
     public int insertMembership(Connection connection, String query){
-        return crudTemplate.insert(connection,query);
+        return crudTemplate.insert(query);
     }
 }

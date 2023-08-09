@@ -43,7 +43,7 @@ public class CategoryRepository {
         return categoryDtoTemplate.select(query,categoryDtoRowMapper);
     }
 
-    public int insertCategory(Connection connection, String query){
-        return categoryDtoTemplate.insert(connection,query);
+    public int insertCategory(String query){
+        return categoryDtoTemplate.insert(query);
     }
 }

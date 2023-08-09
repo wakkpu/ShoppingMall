@@ -1,30 +1,30 @@
 package test;
 
-import Entity.Item;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import repo.CRUDTemplate;
-import resources.ConnectionPool;
+import util.TransactionLocal;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public class RootTest {
     Connection connection;
-    ConnectionPool connectionPool;
-    CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
 
     @BeforeEach
     void before() throws SQLException {
-        connectionPool = ConnectionPool.create();
-        connection = connectionPool.getConnection();
-        System.out.println(connection);
+        connection = TransactionLocal.transactionLocal.createConnection();
         connection.setAutoCommit(false);
+        beforeHook();
     }
 
     @AfterEach
     void after() throws SQLException {
         connection.rollback();
-        connectionPool.releaseConnection(connection);
+        connection.setAutoCommit(true); // 이거 해줘야함 (커넥션 풀을 사용하므로)
+        TransactionLocal.transactionLocal.closeConnection();
+        afterHook();
     }
+
+    public void beforeHook(){}
+    public void afterHook(){}
 }

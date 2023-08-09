@@ -1,12 +1,11 @@
 package test;
 
-import Entity.Consumer;
 import Entity.Item;
 import org.junit.jupiter.api.Test;
 import repo.*;
 
 public class CartRepositoryTest extends RootTest{
-
+    CRUDTemplate<Item> crudTemplate = new CRUDTemplate<>();
 	CartRepository cartRepository;
     Long itemId;
     Long consumerId;
@@ -14,7 +13,6 @@ public class CartRepositoryTest extends RootTest{
 	@Test
 	void insertTest() {
         insertDummyData();
-
 
 	}
 
@@ -28,15 +26,15 @@ public class CartRepositoryTest extends RootTest{
         ItemRepository itemRepository = new ItemRepository();
         CategoryRepository categoryRepository = new CategoryRepository();
 
-        Long categoryId = crudTemplate.selectOneColumn("select IFNULL(MAX(category_id) + 1,1) as category_id from category", Long.class);
-        categoryRepository.insertCategory(connection,"INSERT INTO category SELECT IFNULL(MAX(category_id) + 1, 1), '최성훈', NULL FROM category");
+        Long categoryId = crudTemplate.fetchSingleValue("select IFNULL(MAX(category_id) + 1,1) as category_id from category", Long.class);
+        categoryRepository.insertCategory("INSERT INTO category SELECT IFNULL(MAX(category_id) + 1, 1), '최성훈', NULL FROM category");
 
         itemRepository.insertItem(connection,Item.builder().categoryId(categoryId).itemName("최성훈").itemPrice(50000).build());
-        itemId = crudTemplate.selectOneColumn("select MAX(item_id) as category_id from item", Long.class);
+        itemId = crudTemplate.fetchSingleValue("select MAX(item_id) from item", Long.class);
 
 
-        ConsumerRepository consumerRepository = new ConsumerRepository();
-        consumerId = crudTemplate.selectOneColumn("select IFNULL(MAX(consumer_id) + 1,1) as consumer_id from consumer", Long.class);
+        //ConsumerRepository consumerRepository = new ConsumerRepository();
+        //consumerId = crudTemplate.selectOneColumn("select IFNULL(MAX(consumer_id) + 1,1) as consumer_id from consumer", Long.class);
 
 //        MembershipRepository membershipRepository = new MembershipRepository();
 //
@@ -46,6 +44,4 @@ public class CartRepositoryTest extends RootTest{
 
 
     }
-
-
 }
